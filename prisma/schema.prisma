@@ -1,0 +1,18 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model ShortUrl {
+  id           String    @id @default(uuid())
+  originalUrl  String    @db.VarChar(2048)
+  shortCode    String    @unique @db.VarChar(16)
+  createdAt    DateTime  @default(now())
+  expiresAt    DateTime? // Optional expiration
+  clicks       Int       @default(0)
+  lastAccessed DateTime? // For analytics
+}
