@@ -1,0 +1,1 @@
+ALTER TABLE "ShortUrl" ALTER COLUMN "id" SET DEFAULT id::uuid;

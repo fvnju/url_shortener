@@ -6,6 +6,8 @@ import { serveStatic } from "hono/bun";
 
 const app = new Hono();
 
+app.use("/*", serveStatic({ root: "./public/" }));
+
 const route = app.get("/mk", (c) => {
   console.log("used");
   return c.json({ a: 1 });

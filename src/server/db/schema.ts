@@ -1,21 +1,23 @@
-import { z } from "zod";
+import {
+  pgTable,
+  uuid,
+  varchar,
+  timestamp,
+  integer,
+} from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 
-// For creating new short URLs
-export const CreateShortUrlSchema = z.object({
-  originalUrl: z.string().url(),
-  customCode: z
-    .string()
-    .optional()
-    .refine((val) => !val || /^[a-zA-Z0-9_-]+$/.test(val), {
-      message: "Invalid custom code format",
-    }),
-  expiresAt: z.date().optional(),
+export const shortUrl = pgTable("ShortUrl", {
+  id: uuid("id")
+    .default(sql`gen_random_uuid()`)
+    .primaryKey(),
+  originalUrl: varchar("originalUrl", { length: 2048 }).notNull(),
+  shortCode: varchar("shortCode", { length: 16 }).notNull().unique(),
+  createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
+  expiresAt: timestamp("expiresAt", { mode: "date" }),
+  clicks: integer("clicks").notNull().default(0),
+  lastAccessed: timestamp("lastAccessed", { mode: "date" }),
 });
 
-// For updating analytics
-export const AnalyticsSchema = z.object({
-  shortCode: z.string().min(4).max(16),
-});
-
-export type CreateShortUrlInput = z.infer<typeof CreateShortUrlSchema>;
-export type AnalyticsInput = z.infer<typeof AnalyticsSchema>;
+export type InsertShortUrl = typeof shortUrl.$inferInsert;
+export type SelectShortUrl = typeof shortUrl.$inferSelect;

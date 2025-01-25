@@ -1,11 +1,10 @@
-import { PrismaClient } from "@prisma/client";
+import { drizzle } from "drizzle-orm/neon-http";
+import { neon } from "@neondatabase/serverless";
+import { config } from "dotenv";
 
-const prisma = new PrismaClient({
-  datasources: {
-    db: {
-      url: process.env.DATABASE_URL,
-    },
-  },
-});
+config({ path: ".env" }); // or .env.local
 
-export default prisma;
+const sql = neon(process.env.DATABASE_URL!);
+const db = drizzle({ client: sql });
+
+export default db;

@@ -19,9 +19,9 @@ export default defineConfig(({ mode }) => {
             // Customize the CSS file name here
             assetFileNames: (assetInfo) => {
               if (assetInfo.name!.endsWith(".css")) {
-                return "assets/[name].css"; // Example: assets/tailwind.abc123.css
+                return "assets/index.css"; // Example: assets/tailwind.abc123.css
               }
-              return "assets/[name].[ext]"; // For other assets
+              return "assets/index.[ext]"; // For other assets
             },
           },
         },
@@ -30,7 +30,8 @@ export default defineConfig(({ mode }) => {
     };
   }
 
-  const entry = "./src/index.ts";
+  const entry = !process.env.PROD ? "./src/index_prod.ts" : "./src/index.ts";
+  console.log(entry);
   return {
     server: { port: port || 8000 },
     plugins: [
